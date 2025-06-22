@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/apprehensions/rbxweb"
 )
 
 var (
@@ -16,18 +18,23 @@ var (
 )
 
 // PackageManifest returns a list of packages for the named deployment.
-func (m Mirror) GetPackages(d Deployment) ([]Package, error) {
-	raw, err := http.Get(m.PackageURL(d, "rbxPkgManifest.txt"))
+func (m Mirror) GetPackages(c *rbxweb.Client, d *Deployment) ([]Package, error) {
+	req, err := http.NewRequest("GET", m.PackageURL(d, "rbxPkgManifest.txt"), nil)
 	if err != nil {
 		return nil, err
 	}
-	defer raw.Body.Close()
 
-	if raw.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("%s: %s", ErrMissingPkgManifest, raw.Status)
+	resp, err := c.BareDo(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("%s: %s", ErrMissingPkgManifest, resp.Status)
 	}
 
-	body, err := io.ReadAll(raw.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}

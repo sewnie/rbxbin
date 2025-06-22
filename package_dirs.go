@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"path"
 	"strings"
+
+	"github.com/apprehensions/rbxweb"
 )
 
 // PackageDirectories is a map of where binary deployment packages should go.
@@ -17,8 +19,14 @@ type PackageDirectories map[string]string
 var ErrDirMapScan = errors.New("could not locate package directory map in installer")
 
 // BinaryDirectories retrieves the PackageDirectories for the given deployment from the mirror.
-func (m Mirror) BinaryDirectories(d Deployment) (PackageDirectories, error) {
-	resp, err := http.Get(m.PackageURL(d, "Roblox"+d.Type.Short()+"Installer.exe"))
+func (m Mirror) BinaryDirectories(c *rbxweb.Client, d *Deployment) (PackageDirectories, error) {
+	url := m.PackageURL(d, "Roblox"+d.Type.Short()+"Installer.exe")
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := c.BareDo(req)
 	if err != nil {
 		return nil, err
 	}

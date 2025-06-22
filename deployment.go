@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"github.com/apprehensions/rbxweb"
-	"github.com/apprehensions/rbxweb/clientsettings"
+	"github.com/apprehensions/rbxweb/services/clientsettings"
 )
 
 // ErrBadChannel indicates if the mentioned deployment channel does not exist
@@ -27,22 +27,22 @@ type Deployment struct {
 }
 
 // FetchDeployment returns the latest deployment information for the given
-// Roblox binary type with the given deployment channel.
-func GetDeployment(bt clientsettings.BinaryType, channel string) (Deployment, error) {
-	cv, err := clientsettings.GetClientVersion(bt, channel)
-	if err != nil {
-		var apiError rbxweb.ErrorResponse
-		if errors.As(err, &apiError) {
-			if apiError.Code == 5 {
-				return Deployment{}, ErrBadChannel
-			}
-		}
-		return Deployment{}, err
+// Roblox binary type with the given deployment channel, using the given client.
+func GetDeployment(c *rbxweb.Client, bt clientsettings.BinaryType, channel string) (*Deployment, error) {
+	cv, err := c.ClientSettingsV1.GetClientVersion(bt, channel)
+	if err == nil {
+		return &Deployment{
+			Type:    bt,
+			Channel: channel,
+			GUID:    cv.GUID,
+		}, nil
 	}
 
-	return Deployment{
-		Type:    bt,
-		Channel: channel,
-		GUID:    cv.GUID,
-	}, nil
+	var apiError rbxweb.ErrorResponse
+	if errors.As(err, &apiError) {
+		if apiError.Code == 5 {
+			return nil, ErrBadChannel
+		}
+	}
+	return nil, err
 }

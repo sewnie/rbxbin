@@ -21,7 +21,7 @@ type Package struct {
 
 // Package returns a URL to a package given a package name
 // and a Deployment, relative to the mirror.
-func (m Mirror) PackageURL(d Deployment, pkg string) string {
+func (m Mirror) PackageURL(d *Deployment, pkg string) string {
 	return m.URL(d.Channel) + "/" + d.GUID + "-" + pkg
 }
 
