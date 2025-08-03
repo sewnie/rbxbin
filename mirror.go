@@ -2,7 +2,6 @@ package rbxbin
 
 import (
 	"errors"
-	"io"
 	"net/http"
 	"strings"
 
@@ -11,9 +10,6 @@ import (
 
 // Mirror represents a Roblox deployment mirror.
 type Mirror string
-
-// Job represents a deployment build.
-type Job rbxdhist.Job
 
 // DefaultMirror is the default deployment mirror that can be
 // used in situations where mirror fallbacks are undesired.
@@ -44,40 +40,6 @@ func (m Mirror) URL(channel string) string {
 	channel = strings.ToLower(channel)
 
 	return string(m) + "/channel/" + channel
-}
-
-// Jobs returns the available deployment builds for the mirror.
-func (m Mirror) GetJobs() ([]*Job, error) {
-	hist, err := http.Get(m.URL("") + "/DeployHistory.txt")
-	if err != nil {
-		return nil, err
-	}
-
-	body, err := io.ReadAll(hist.Body)
-	hist.Body.Close()
-	if err != nil {
-		return nil, err
-	}
-
-	return ParseJobs(body), nil
-}
-
-// ParseJobs is a wrapper that returns a list of deployments, parsed
-// from the stream of bytes.
-//
-// See [rbxdhist.Lex] for more information.
-func ParseJobs(js []byte) (jobs []*Job) {
-	stream := rbxdhist.Lex(js)
-	for _, s := range stream {
-		j, ok := s.(*rbxdhist.Job)
-		if !ok || j == nil {
-			continue
-		}
-
-		jobs = append(jobs, (*Job)(j))
-	}
-
-	return
 }
 
 // Mirror returns an available deployment mirror from [Mirrors].
