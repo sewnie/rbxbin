@@ -10,7 +10,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/apprehensions/rbxweb"
+	"github.com/sewnie/rbxweb"
 )
 
 // PackageDirectories is a map of where binary deployment packages should go.

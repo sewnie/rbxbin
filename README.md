@@ -1,5 +1,5 @@
 # rbxbin
-[pkg.go.dev]:     https://pkg.go.dev/github.com/apprehensions/rbxbin
+[pkg.go.dev]:     https://pkg.go.dev/github.com/sewnie/rbxbin
 [pkg.go.dev_img]: https://img.shields.io/badge/%E2%80%8B-reference-007d9c?logo=go&logoColor=white&style=flat-square
 
 [![Godoc Reference][pkg.go.dev_img]][pkg.go.dev]
@@ -17,8 +17,8 @@ package main
 import (
 	"log"
 
-	"github.com/apprehensions/rbxbin"
-	cs "github.com/apprehensions/rbxweb/clientsettings"
+	"github.com/sewnie/rbxbin"
+	cs "github.com/sewnie/rbxweb/clientsettings"
 )
 
 func main() {

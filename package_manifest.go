@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/apprehensions/rbxweb"
+	"github.com/sewnie/rbxweb"
 )
 
 var (

@@ -3,8 +3,8 @@ package rbxbin
 import (
 	"errors"
 
-	"github.com/apprehensions/rbxweb"
-	"github.com/apprehensions/rbxweb/services/clientsettings"
+	"github.com/sewnie/rbxweb"
+	"github.com/sewnie/rbxweb/services/clientsettings"
 )
 
 // ErrBadChannel indicates if the mentioned deployment channel does not exist
