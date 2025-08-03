@@ -4,8 +4,6 @@ import (
 	"errors"
 	"net/http"
 	"strings"
-
-	"github.com/robloxapi/rbxdhist"
 )
 
 // Mirror represents a Roblox deployment mirror.

@@ -1,8 +1,6 @@
-github.com/sewnie/rbxweb v0.0.0-20250622190937-6446c75cdfb2 h1:1/FGvSsQgXvH+UMa2OZwRBYVtKQMuQq/2AmIXevvC1E=
-github.com/sewnie/rbxweb v0.0.0-20250622190937-6446c75cdfb2/go.mod h1:tsyRzvTZW0t43kslCxwSmW/mdtFX8EceMU8gLYLEkB4=
-github.com/sewnie/rbxweb v0.0.0-20250622194043-c9276a185f29 h1:zlUQUqhG0Ui2RjJ202kcWcmlisWLaG7ngikVDwK6AK0=
-github.com/sewnie/rbxweb v0.0.0-20250622194043-c9276a185f29/go.mod h1:tsyRzvTZW0t43kslCxwSmW/mdtFX8EceMU8gLYLEkB4=
 github.com/robloxapi/rbxdhist v0.6.0 h1:DH3hBwjgnJJyfuRQvJxkaX27V/EQP8/0KihW/9Ajo6Q=
 github.com/robloxapi/rbxdhist v0.6.0/go.mod h1:Dv8zmWSygz0Qc8SIRxasJ8wlAIchvyifEVHrG3qwNXI=
 github.com/robloxapi/rbxver v0.3.0 h1:ax3ndKtLiXNeYbGc56UEcPQYYMEr6heOfyRDfn+68lg=
 github.com/robloxapi/rbxver v0.3.0/go.mod h1:mpM7UdZ2YyLq4gSVtWToeRQLUHNBcOfRGRjINbOi5vM=
+github.com/sewnie/rbxweb v0.0.0-20250803173200-2b6b493e8b87 h1:3a+NtlMOO0626RKauIgSmlTC4VwfLVGY2HTgt/WzYOI=
+github.com/sewnie/rbxweb v0.0.0-20250803173200-2b6b493e8b87/go.mod h1:ySU5TBTXryuReC5IyHot4+mdYhAp4LCdu10itb03nwY=
