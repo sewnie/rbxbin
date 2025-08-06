@@ -27,8 +27,8 @@ type Deployment struct {
 
 // FetchDeployment returns the latest deployment information for the given
 // Roblox binary type with the given deployment channel, using the given client.
-func GetDeployment(c *rbxweb.Client, bt clientsettings.BinaryType, channel string) (*Deployment, error) {
-	cv, err := c.ClientSettingsV1.GetClientVersion(bt, channel)
+func GetDeployment(c *rbxweb.Client, bt rbxweb.BinaryType, channel string) (*Deployment, error) {
+	cv, err := c.ClientSettingsV2.GetClientVersion(bt, channel)
 	if err == nil {
 		return &Deployment{
 			Type:    bt,
