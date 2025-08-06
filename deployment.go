@@ -4,7 +4,6 @@ import (
 	"errors"
 
 	"github.com/sewnie/rbxweb"
-	"github.com/sewnie/rbxweb/services/clientsettings"
 )
 
 // ErrBadChannel indicates if the mentioned deployment channel does not exist
@@ -21,7 +20,7 @@ var ErrBadChannel = errors.New("deployment channel is invalid or unauthorized")
 // is (or can be) 'production'. This behavior is undocumented, so it is reccomended
 // to simply provide an empty string for the channel.
 type Deployment struct {
-	Type    clientsettings.BinaryType
+	Type    rbxweb.BinaryType
 	Channel string
 	GUID    string
 }

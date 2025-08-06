@@ -18,11 +18,10 @@ import (
 	"log"
 
 	"github.com/sewnie/rbxbin"
-	cs "github.com/sewnie/rbxweb/clientsettings"
 )
 
 func main() {
-	d, err := rbxbin.GetDeployment(cs.WindowsPlayer, "LIVE")
+	d, err := rbxbin.GetDeployment(rbxbin.WindowsPlayer, "LIVE")
 	if err != nil {
 		log.Fatalln("failed to get deployment:", err)
 	}
