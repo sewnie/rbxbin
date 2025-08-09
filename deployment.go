@@ -37,7 +37,7 @@ func GetDeployment(c *rbxweb.Client, bt rbxweb.BinaryType, channel string) (*Dep
 		}, nil
 	}
 
-	var apiError rbxweb.ErrorResponse
+	var apiError rbxweb.Error
 	if errors.As(err, &apiError) {
 		if apiError.Code == 5 {
 			return nil, ErrBadChannel
