@@ -3,12 +3,8 @@ package rbxbin
 import (
 	"errors"
 	"fmt"
-	"io"
-	"net/http"
 	"strconv"
 	"strings"
-
-	"github.com/sewnie/rbxweb"
 )
 
 var (
@@ -18,23 +14,10 @@ var (
 )
 
 // PackageManifest returns a list of packages for the named deployment.
-func (m Mirror) GetPackages(c *rbxweb.Client, d *Deployment) ([]Package, error) {
-	req, err := http.NewRequest("GET", m.PackageURL(d, "rbxPkgManifest.txt"), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := c.BareDo(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("%s: %s", ErrMissingPkgManifest, resp.Status)
-	}
-
-	body, err := io.ReadAll(resp.Body)
+//
+// The given Client's Security will be used in the request if available.
+func (m Mirror) GetPackages(d *Deployment) ([]Package, error) {
+	body, err := d.get(m.PackageURL(d, "rbxPkgManifest.txt"))
 	if err != nil {
 		return nil, err
 	}

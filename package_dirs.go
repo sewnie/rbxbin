@@ -5,8 +5,6 @@ import (
 	"debug/pe"
 	"encoding/json"
 	"errors"
-	"io"
-	"net/http"
 	"path"
 	"strings"
 
@@ -19,20 +17,11 @@ type PackageDirectories map[string]string
 var ErrDirMapScan = errors.New("could not locate package directory map in installer")
 
 // BinaryDirectories retrieves the PackageDirectories for the given deployment from the mirror.
+//
+// The given Client's Security will be used in the request if available.
 func (m Mirror) BinaryDirectories(c *rbxweb.Client, d *Deployment) (PackageDirectories, error) {
 	url := m.PackageURL(d, "Roblox"+d.Type.Short()+"Installer.exe")
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := c.BareDo(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	exe, err := io.ReadAll(resp.Body)
+	exe, err := d.get(url)
 	if err != nil {
 		return nil, err
 	}

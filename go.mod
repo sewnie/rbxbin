@@ -4,4 +4,4 @@ go 1.23.0
 
 toolchain go1.24.4
 
-require github.com/sewnie/rbxweb v0.0.0-20250808111157-866458e48667
+require github.com/sewnie/rbxweb v0.0.0-20250816104123-2cd06d8d0551

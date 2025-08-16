@@ -3,7 +3,6 @@ package rbxbin
 import (
 	"errors"
 	"net/http"
-	"strings"
 )
 
 // Mirror represents a Roblox deployment mirror.
@@ -27,25 +26,12 @@ var (
 	}
 )
 
-// URL returns the mirror's URL with the given optional deployment channel.
-func (m Mirror) URL(channel string) string {
-	if channel == "" || channel == "LIVE" || channel == "live" {
-		return string(m)
-	}
-
-	// Ensure that the channel is lowercased, since internally in
-	// ClientSettings it will be lowercased, but not on the deploy mirror.
-	channel = strings.ToLower(channel)
-
-	return string(m) + "/channel/" + channel
-}
-
 // Mirror returns an available deployment mirror from [Mirrors].
 //
 // Deployment mirrors may go down, or be blocked by ISPs.
 func GetMirror() (Mirror, error) {
 	for _, m := range Mirrors {
-		resp, err := http.Head(m.URL("") + "/" + "version")
+		resp, err := http.Head(string(m) + "/" + "version")
 		if err != nil {
 			continue
 		}

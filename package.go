@@ -22,7 +22,7 @@ type Package struct {
 // Package returns a URL to a package given a package name
 // and a Deployment, relative to the mirror.
 func (m Mirror) PackageURL(d *Deployment, pkg string) string {
-	return m.URL(d.Channel) + "/" + d.GUID + "-" + pkg
+	return string(m) + "/channel/common/" + d.GUID + "-" + pkg
 }
 
 // Verify checks the named package source file against it's checksum.
