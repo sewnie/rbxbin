@@ -1,8 +1,12 @@
 package rbxbin
 
 import (
+	"bytes"
+	"debug/pe"
 	"errors"
 	"net/http"
+
+	"github.com/sewnie/rbxweb"
 )
 
 // Mirror represents a Roblox deployment mirror.
@@ -43,4 +47,56 @@ func GetMirror() (Mirror, error) {
 	}
 
 	return "", ErrNoMirrorFound
+}
+
+// Package returns a URL to a package given a package name
+// and a Deployment, relative to the mirror.
+func (m Mirror) PackageURL(d *Deployment, pkg string) string {
+	// "common" used for all channels, private and public
+	return string(m) + "/channel/common/" + d.GUID + "-" + pkg
+}
+
+// PackageManifest returns a list of packages for the named deployment.
+//
+// The given Client's Security will be used in the request if available.
+func (m Mirror) GetPackages(d *Deployment) ([]Package, error) {
+	body, err := d.get(m.PackageURL(d, "rbxPkgManifest.txt"))
+	if err != nil {
+		return nil, err
+	}
+
+	manif, err := ParsePackages(body)
+	if err != nil {
+		return nil, err
+	}
+
+	return manif, nil
+}
+
+// BinaryDirectories retrieves the PackageDirectories for the given deployment from the mirror.
+//
+// The given Client's Security will be used in the request if available.
+func (m Mirror) BinaryDirectories(c *rbxweb.Client, d *Deployment) (PackageDirectories, error) {
+	url := m.PackageURL(d, "Roblox"+d.Type.Short()+"Installer.exe")
+	exe, err := d.get(url)
+	if err != nil {
+		return nil, err
+	}
+
+	f, err := pe.NewFile(bytes.NewReader(exe))
+	if err != nil {
+		return nil, err
+	}
+
+	s, err := f.Section(".rdata").Data()
+	if err != nil {
+		return nil, err
+	}
+
+	pd := scanPackageDirectories(s)
+	if pd == nil {
+		return nil, ErrDirMapScan
+	}
+
+	return pd, nil
 }

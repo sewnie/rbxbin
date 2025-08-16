@@ -13,23 +13,6 @@ var (
 	ErrUnhandledPkgManifestVer = errors.New("unhandled package manifest version")
 )
 
-// PackageManifest returns a list of packages for the named deployment.
-//
-// The given Client's Security will be used in the request if available.
-func (m Mirror) GetPackages(d *Deployment) ([]Package, error) {
-	body, err := d.get(m.PackageURL(d, "rbxPkgManifest.txt"))
-	if err != nil {
-		return nil, err
-	}
-
-	manif, err := ParsePackages(body)
-	if err != nil {
-		return nil, err
-	}
-
-	return manif, nil
-}
-
 // ParsePackages returns a list of packages parsed from the named package manifest.
 func ParsePackages(b []byte) ([]Package, error) {
 	var pkgs []Package
