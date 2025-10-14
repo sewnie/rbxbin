@@ -5,8 +5,6 @@ import (
 	"debug/pe"
 	"errors"
 	"net/http"
-
-	"github.com/sewnie/rbxweb"
 )
 
 // Mirror represents a Roblox deployment mirror.
@@ -76,7 +74,7 @@ func (m Mirror) GetPackages(d *Deployment) ([]Package, error) {
 // BinaryDirectories retrieves the PackageDirectories for the given deployment from the mirror.
 //
 // The given Client's Security will be used in the request if available.
-func (m Mirror) BinaryDirectories(c *rbxweb.Client, d *Deployment) (PackageDirectories, error) {
+func (m Mirror) BinaryDirectories(d *Deployment) (PackageDirectories, error) {
 	url := m.PackageURL(d, "Roblox"+d.Type.Short()+"Installer.exe")
 	exe, err := d.get(url)
 	if err != nil {

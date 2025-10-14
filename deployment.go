@@ -26,7 +26,21 @@ type Deployment struct {
 	Channel string
 	GUID    string
 
+	client *rbxweb.Client
+}
+
+type tokenTransport struct {
+	base  http.RoundTripper
 	token string
+}
+
+func (t *tokenTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	clone := req.Clone(req.Context())
+	if t.token != "" {
+		clone.Header.Add("Roblox-Channel-Token", t.token)
+	}
+	clone.Header.Add("User-Agent", "rbxbin/v0.0.0")
+	return t.base.RoundTrip(clone)
 }
 
 // FetchDeployment returns the latest deployment information for the given
@@ -46,14 +60,20 @@ func GetDeployment(c *rbxweb.Client, bt rbxweb.BinaryType, channel string) (*Dep
 		token = uc.Token
 	}
 
-	cv, err := c.ClientSettingsV2.GetClientVersion(bt, channel)
+	client := rbxweb.NewClient()
+	client.Transport = &tokenTransport{base: c.Transport, token: token}
+	if c.Transport == nil {
+		client.Transport.(*tokenTransport).base = http.DefaultTransport
+	}
+
+	cv, err := client.ClientSettingsV2.GetClientVersion(bt, channel)
 	if err == nil {
 		return &Deployment{
 			Type:    bt,
 			Channel: channel,
 			GUID:    cv.GUID,
 
-			token: token,
+			client: client,
 		}, nil
 	}
 
@@ -66,21 +86,13 @@ func GetDeployment(c *rbxweb.Client, bt rbxweb.BinaryType, channel string) (*Dep
 	return nil, err
 }
 
-// Helper utility for making authenticated requests using the Deployment token.
 func (d *Deployment) get(url string) ([]byte, error) {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	if d.token != "" {
-		// Credits to evn (@cl1ents)
-		req.Header.Add("Roblox-Channel-Token", d.token)
-	}
-	req.Header.Add("User-Agent", "rbxbin/v0.0.0")
-
-	c := &http.Client{}
-	resp, err := c.Do(req)
+	resp, err := d.client.Client.Do(req)
 	if err != nil {
 		return nil, err
 	}
