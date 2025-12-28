@@ -92,7 +92,12 @@ func (d *Deployment) get(url string) ([]byte, error) {
 		return nil, err
 	}
 
-	resp, err := d.client.Client.Do(req)
+	client := http.DefaultClient
+	if d.client != nil {
+		client = &d.client.Client
+	}
+
+	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
