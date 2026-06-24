@@ -4,6 +4,7 @@ import (
 	"archive/zip"
 	"crypto/md5"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -40,10 +41,15 @@ func (p *Package) Verify(src string) error {
 	return nil
 }
 
-// Extract extracts the named package source file to a given destination directory.
+// Extract extracts the package's assumed downloaded 'src' path
+// destination directory. If the package is not a zip, it will be
+// copied directly to the directory as the filename.
 func (p *Package) Extract(src, dir string) error {
 	r, err := zip.OpenReader(src)
-	if err != nil {
+	if err != nil &&
+		errors.Is(err, zip.ErrFormat) && filepath.Ext(p.Name) != ".zip" {
+		return p.extractFile(src, dir)
+	} else if err != nil {
 		return err
 	}
 	defer r.Close()
@@ -81,6 +87,35 @@ func (p *Package) Extract(src, dir string) error {
 	}
 
 	return nil
+}
+
+func (p *Package) extractFile(src, dir string) error {
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		return err
+	}
+
+	f, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	name := filepath.Join(dir, p.Name)
+	dst, err := os.OpenFile(name, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0o644)
+	if err != nil {
+		return err
+	}
+	defer dst.Close()
+
+	n, err := io.Copy(dst, f)
+	if err != nil {
+		return err
+	}
+
+	if n != p.Size {
+		return io.ErrShortWrite
+	}
+	return err
 }
 
 func unzipFile(src *zip.File, name string) error {
